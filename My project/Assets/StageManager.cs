@@ -10,7 +10,7 @@ public class StageManager : MonoBehaviour
     [SerializeField] private int currentStageIndex = 0;
     [SerializeField] private bool isNextStageUnlocked = false;
 
-    public int[] purchaseCounts;
+    [SerializeField] private int[] purchaseCounts;
 
     public StageData CurrentStage
     {
@@ -97,6 +97,12 @@ public class StageManager : MonoBehaviour
 
     public int StageCount => stages != null ? stages.Length : 0;
     public int CurrentStageIndex => currentStageIndex;
+    public int GetPurchaseCount(int index)
+    {
+        if (purchaseCounts == null) return 0;
+        if (index < 0 || index >= purchaseCounts.Length) return 0;
+        return purchaseCounts[index];
+    }
 
     public StageData GetStage(int index)
     {

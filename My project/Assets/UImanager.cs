@@ -74,9 +74,7 @@ public class UIManager : MonoBehaviour
     {
         for (int i = 0; i < spawned.Count; i++)
         {
-            var btn = spawned[i];
-            if (btn == null) continue;
-
+             spawned[i].RefreshState();
             // cost를 버튼이 들고 있거나, StageData에서 다시 읽게 구성
             // 가장 단순: 버튼 내부에서 StageData cost를 다시 받도록 구조화
         }
@@ -157,27 +155,19 @@ public class UIManager : MonoBehaviour
             img.color = unlocked ? unlockedColor : lockedColor;
         }
     }
-    public void BuildTraitButtons()
+    private void BuildTraitButtons()
+{
+    int count = stageManager.StageCount;
+
+    for (int i = 0; i < count; i++)
     {
-        if (traitListRoot == null || traitButtonPrefab == null) return;
-        if (stageManager == null || resourceManager == null) return;
+        var data = stageManager.GetStage(i);
+        if (data == null) continue;
 
-        // 기존 버튼 삭제
-        for (int i = 0; i < spawned.Count; i++)
-            if (spawned[i] != null) Destroy(spawned[i].gameObject);
-        spawned.Clear();
-
-        // StageData 배열 길이만큼 생성
-        int count = stageManager.StageCount; // 없으면 stages.Length getter 만들기
-        for (int i = 0; i < count; i++)
-        {
-            StageData data = stageManager.GetStage(i);
-            if (data == null) continue;
-
-            var btn = Instantiate(traitButtonPrefab, traitListRoot);
-            btn.Bind(i, data, this, stageManager, resourceManager);
-            spawned.Add(btn);
-        }
+        var btn = Instantiate(traitButtonPrefab, traitListRoot);
+        btn.Bind(i, data, this, stageManager, resourceManager);
+        spawned.Add(btn);
     }
+}
 
 }
