@@ -57,6 +57,8 @@ public class StageManager : MonoBehaviour
         if (isNextStageUnlocked) return;
 
         isNextStageUnlocked = true;
+        OnStageVisualDirty?.Invoke();
+
     }
 
     public bool CanAdvance()
@@ -78,6 +80,32 @@ public class StageManager : MonoBehaviour
         currentStageIndex = nextIndex;
 
         isNextStageUnlocked = false;
+        OnStageVisualDirty?.Invoke();
+
+    }
+
+    //UI가 읽을 수 있도록
+    
+    public event System.Action OnStageVisualDirty;
+    public int StageCount => stages != null ? stages.Length : 0;
+    public int CurrentStageIndex => currentStageIndex;
+
+    public StageData GetStage(int index)
+    {
+        if (stages == null) return null;
+        if (index < 0 || index >= stages.Length) return null;
+        return stages[index];
+    }
+
+    // 잠김/언락 판정: 지금 구조(다음 1단계만 언락 가능)에 맞춘 버전
+    public bool IsStageUnlocked(int index)
+    {
+        if (stages == null) return false;
+        if (index < 0 || index >= stages.Length) return false;
+
+        if (index <= currentStageIndex) return true;
+        if (index == currentStageIndex + 1) return isNextStageUnlocked;
+        return false;
     }
 }
 
