@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b43d618ba235ad4db75af89131e384c, type: 3}
   m_Name: StageData_ 1
   m_EditorClassIdentifier: Assembly-CSharp::StageData
-  stageName: 
-  description: 
+  stageName: T2
+  description: "\uD504\uB85C\uD1A0\uD0C0\uC785"
   stageSprite: {fileID: 0}
-  traitCost: 0
-  traitClickGain: 0
-  purchasesToUnlockNextStage: 0
+  traitCost: 15
+  traitClickGain: 30
+  purchasesToUnlockNextStage: 20
