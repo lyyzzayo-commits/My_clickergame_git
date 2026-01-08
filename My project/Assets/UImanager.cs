@@ -4,6 +4,12 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+
+    [Header("Trait List")]
+    [SerializeField] private Transform traitListRoot;       // TraitList(VerticalLayoutGroup ë¶™ì€ ê³³)
+    [SerializeField] private TraitButton traitButtonPrefab;
+    private readonly System.Collections.Generic.List<TraitButton> spawned = new();
+
     [SerializeField] private ResourceManager resourceManager;
     [SerializeField] private StageManager stageManager;
     [SerializeField] private BuyButton buyButton;
@@ -34,7 +40,7 @@ public class UIManager : MonoBehaviour
             stageManager.OnStageVisualDirty += RefreshStageIcons;
         }
 
-        // ResourceManager¿¡ ÀÌº¥Æ®°¡ ÀÖ´Ù¸é ¿©±â¿¡ ±¸µ¶
+        // ResourceManagerï¿½ï¿½ ï¿½Ìºï¿½Æ®ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ ï¿½ï¿½ï¿½â¿¡ ï¿½ï¿½ï¿½ï¿½
         // resourceManager.OnAdaptationChanged += HandleAdaptationChanged;
     }
 
@@ -51,31 +57,44 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
+        BuildTraitButtons();
         RefreshAll();
     }
 
-    // 1) ½ÃÀÛ/·Îµå ½Ã 1È¸ ÀüÃ¼ °»½Å
+    // 1) ï¿½ï¿½ï¿½ï¿½/ï¿½Îµï¿½ ï¿½ï¿½ 1È¸ ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½
     public void RefreshAll()
     {
         RefreshAdaptationText();
         RefreshStagePanel();
         RefreshUpgradePanel();
         RefreshStageIcons();
+        RefreshTraitButtonsState();
+    }
+    private void RefreshTraitButtonsState()
+    {
+        for (int i = 0; i < spawned.Count; i++)
+        {
+            var btn = spawned[i];
+            if (btn == null) continue;
+
+            // costë¥¼ ë²„íŠ¼ì´ ë“¤ê³  ìˆê±°ë‚˜, StageDataì—ì„œ ë‹¤ì‹œ ì½ê²Œ êµ¬ì„±
+            // ê°€ì¥ ë‹¨ìˆœ: ë²„íŠ¼ ë‚´ë¶€ì—ì„œ StageData costë¥¼ ë‹¤ì‹œ ë°›ë„ë¡ êµ¬ì¡°í™”
+        }
     }
 
-    // 2) StageManager.OnStageChanged¿¡¼­ È£ÃâµÊ
+    // 2) StageManager.OnStageChangedï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½ï¿½
     private void HandleStageChanged(StageData newStage)
     {
-        RefreshStagePanel();     // ÀÌ¸§/¼³¸í/ÀÌ¹ÌÁö
-        RefreshUpgradePanel();   // ´ÙÀ½ ½ºÅ×ÀÌÁö ºñ¿ë/¹öÆ° »óÅÂ
-        RefreshStageIcons();     // ¾ÆÀÌÄÜ »ö
+        RefreshStagePanel();     // ï¿½Ì¸ï¿½/ï¿½ï¿½ï¿½ï¿½/ï¿½Ì¹ï¿½ï¿½ï¿½
+        RefreshUpgradePanel();   // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½/ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½
+        RefreshStageIcons();     // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
     }
 
-    // 3) Adaptation º¯°æ ½Ã È£ÃâµÇµµ·Ï(ÀÌº¥Æ®°¡ ¾øÀ¸¸é BuyButton Å¬¸¯ ÈÄ ¼öµ¿ È£ÃâÇØµµ µÊ)
+    // 3) Adaptation ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ È£ï¿½ï¿½Çµï¿½ï¿½ï¿½(ï¿½Ìºï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ BuyButton Å¬ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½ï¿½Øµï¿½ ï¿½ï¿½)
     public void HandleAdaptationChanged(int newValue)
     {
         RefreshAdaptationText(newValue);
-        RefreshUpgradePanel(); // µ·ÀÌ ¹Ù²î¸é ±¸¸Å °¡´É ¿©ºÎµµ ¹Ù²ñ
+        RefreshUpgradePanel(); // ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Îµï¿½ ï¿½Ù²ï¿½
     }
 
     private void RefreshAdaptationText()
@@ -138,4 +157,27 @@ public class UIManager : MonoBehaviour
             img.color = unlocked ? unlockedColor : lockedColor;
         }
     }
+    public void BuildTraitButtons()
+    {
+        if (traitListRoot == null || traitButtonPrefab == null) return;
+        if (stageManager == null || resourceManager == null) return;
+
+        // ê¸°ì¡´ ë²„íŠ¼ ì‚­ì œ
+        for (int i = 0; i < spawned.Count; i++)
+            if (spawned[i] != null) Destroy(spawned[i].gameObject);
+        spawned.Clear();
+
+        // StageData ë°°ì—´ ê¸¸ì´ë§Œí¼ ìƒì„±
+        int count = stageManager.StageCount; // ì—†ìœ¼ë©´ stages.Length getter ë§Œë“¤ê¸°
+        for (int i = 0; i < count; i++)
+        {
+            StageData data = stageManager.GetStage(i);
+            if (data == null) continue;
+
+            var btn = Instantiate(traitButtonPrefab, traitListRoot);
+            btn.Bind(i, data, this, stageManager, resourceManager);
+            spawned.Add(btn);
+        }
+    }
+
 }
