@@ -143,19 +143,5 @@ public class UIManager : MonoBehaviour
             img.color = unlocked ? unlockedColor : lockedColor;
         }
     }
-    private void BuildTraitButtons()
-{
-    int count = stageManager.StageCount;
-
-    for (int i = 0; i < count; i++)
-    {
-        var data = stageManager.GetStage(i);
-        if (data == null) continue;
-
-        var btn = Instantiate(traitButtonPrefab, traitListRoot);
-        btn.Bind(i, data, this, stageManager, resourceManager);
-        spawned.Add(btn);
-    }
-}
 
 }
