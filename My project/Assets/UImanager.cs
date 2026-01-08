@@ -24,7 +24,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
     int currentUpgradeCost = stageData.
 
 
-    public void RefreshAll()
+    public void RefreshAll() // 현재 게임 상태 전체를 한 번에 화면에 반영
     {
         int adaptation = resourceManager.Adaptation;
         adaptationText.text = adaptation.ToString();
@@ -52,7 +52,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
         upgradeButton.interactable = affordable;
     }
 
-    public void SetAdaptation(int value)
+    public void SetAdaptation(int value) // 외부에서 전달 받은 Adaptation 값으로 UI 갱신
     {
         if (adaptationText != null)
             adaptationText.text = value.ToString();
@@ -62,7 +62,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
             upgradeButton.interactable = affordable;
         }
     }
-    public void RefreshAdaptation()
+    public void RefreshAdaptation() //Adaptation 값이 바뀌었을 때 UI만 부분 갱신
     {
         int adaptation = resourceManager.Adaptation;
 
@@ -75,7 +75,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
         }
     }
 
-    public void SetStage(string name,string desc,Sprite sprite)
+    public void SetStage(string name,string desc,Sprite sprite) // Stage가 바뀌었을 때 Stage UI만 교체
     {
         if (stageNameText != null)
             stageNameText.text = stageName;
@@ -87,7 +87,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
             stageImage.sprite = stageSprite;
     }
 
-    private void SetUpgrade(int cost, int clickPower)
+    private void SetUpgrade(int cost, int clickPower) // 업그레이드 정보(비용/효과)를 UI에 반영
     {
         currentUpgradeCost = cost;
 
@@ -105,7 +105,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
         }
     }
 
-    private void SetUpgradeAffordable(bool affordable)
+    private void SetUpgradeAffordable(bool affordable) // 업그레이드 버튼의 구매 가능/불가 상태만 제어
     {
         if (upgradeButton == null)
 
