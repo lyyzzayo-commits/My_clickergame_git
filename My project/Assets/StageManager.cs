@@ -10,7 +10,7 @@ public class StageManager : MonoBehaviour
     [SerializeField] private int currentStageIndex = 0;
     [SerializeField] private bool isNextStageUnlocked = false;
 
-    private int[] purchaseCounts;
+    public int[] purchaseCounts;
 
     public StageData CurrentStage
     {
