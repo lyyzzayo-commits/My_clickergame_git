@@ -57,6 +57,8 @@ public class StageManager : MonoBehaviour
         if (isNextStageUnlocked) return;
 
         isNextStageUnlocked = true;
+        OnStageVisualDirty?.Invoke();
+
     }
 
     public bool CanAdvance() // ½ºÅ×ÀÌÁö °³¹æ Á¶°Ç  
@@ -78,6 +80,32 @@ public class StageManager : MonoBehaviour
         currentStageIndex = nextIndex;
 
         isNextStageUnlocked = false;
+        OnStageVisualDirty?.Invoke();
+
+    }
+
+    //UIê°€ ì½ì„ ìˆ˜ ìˆë„ë¡
+    
+    public event System.Action OnStageVisualDirty;
+    public int StageCount => stages != null ? stages.Length : 0;
+    public int CurrentStageIndex => currentStageIndex;
+
+    public StageData GetStage(int index)
+    {
+        if (stages == null) return null;
+        if (index < 0 || index >= stages.Length) return null;
+        return stages[index];
+    }
+
+    // ì ê¹€/ì–¸ë½ íŒì •: ì§€ê¸ˆ êµ¬ì¡°(ë‹¤ìŒ 1ë‹¨ê³„ë§Œ ì–¸ë½ ê°€ëŠ¥)ì— ë§ì¶˜ ë²„ì „
+    public bool IsStageUnlocked(int index)
+    {
+        if (stages == null) return false;
+        if (index < 0 || index >= stages.Length) return false;
+
+        if (index <= currentStageIndex) return true;
+        if (index == currentStageIndex + 1) return isNextStageUnlocked;
+        return false;
     }
 }
 

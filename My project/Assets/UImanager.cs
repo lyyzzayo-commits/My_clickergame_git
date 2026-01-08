@@ -4,10 +4,12 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
-public class NewMonoBehaviourScript : MonoBehaviour
+public class UImanager : MonoBehaviour
 {
     [SerializeField] private ResourceManager resourceManager;
-    [SerializeField] private StageData stageData;
+    [SerializeField] private StageManager stageManager;
+    [SerializeField] private BuyButton buyButton; 
+
 
     // UI 참조
     [SerializeField] private TMP_Text adaptationText;
@@ -19,9 +21,22 @@ public class NewMonoBehaviourScript : MonoBehaviour
     [SerializeField] private TMP_Text clickPowerText;
     [SerializeField] private Button upgradeButton;
 
+    [SerializeField] private StageManager stageManager;
+    [SerializeField] private Image[] stageIcons;
+
+    [SerializeField] private Color lockedColor = Color.black;
+    [SerializeField] private Color unlockedColor = Color.white;
+
+
     //string stageName = stageManager.
     //string currentStageDesc = stageManager.
     //int currentUpgradeCost = stageManager.
+
+    private void Start()
+    {
+        RefreshStageIcons();
+    }
+
     
 
     public void RefreshAll() // 현재 게임 상태 전체를 한 번에 화면에 반영
@@ -87,7 +102,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
             //stageImage.sprite = stageSprite;
     }
 
-    private void SetUpgrade(int cost, int clickPower) // 업그레이드 정보(비용/효과)를 UI에 반영
+    public void SetUpgrade(int cost, int clickPower, bool affordable, bool canAdvance) // 업그레이드 정보(비용/효과)를 UI에 반영
     {
         //currentUpgradeCost = cost;
 
@@ -98,17 +113,52 @@ public class NewMonoBehaviourScript : MonoBehaviour
             clickPowerText.text = clickPower.ToString();
 
         if (upgradeButton != null)
-        {
-            int adaptation = resourceManager.Adaptation;
-            bool affordable = adaptation >= cost;
-            upgradeButton.interactable = affordable;
-        }
+            upgradeButton.interactable = affordable && canAdvance;
     }
 
     private void SetUpgradeAffordable(bool affordable) // 업그레이드 버튼의 구매 가능/불가 상태만 제어
     {
-        if (upgradeButton == null)
+        if (upgradeButton != null)
 
             upgradeButton.interactable = affordable;
     }
+
+    public void RefreshStageIcons()
+    {
+        if (stageManager == null) return;
+
+        for (int i = 0; i < stageIcons.Length; i++)
+        {
+            var img = stageIcons[i];
+            if (img == null) continue;
+
+            StageData data = stageManager.GetStage(i);
+            if (data == null)
+            {
+                img.enabled = false;
+                continue;
+            }
+
+            img.enabled = true;
+            img.sprite = data.stageSprite; // StageData의 스프라이트 필드명 맞춰서
+            bool unlocked = stageManager.IsStageUnlocked(i);
+
+            img.color = unlocked ? unlockedColor : lockedColor;
+        }
+    }
+
+    private void OnEnable()
+    
+    {
+        if (stageManager != null)
+            stageManager.OnStageVisualDirty += RefreshStageIcons;
+    }
+
+    private void OnDisable()
+    {
+        if (stageManager != null)
+            stageManager.OnStageVisualDirty -= RefreshStageIcons;
+    }
+
+
 }
