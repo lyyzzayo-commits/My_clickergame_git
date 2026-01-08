@@ -22,6 +22,31 @@ public sealed class PurchaseManager : MonoBehaviour
     public event Action<int> OnPurchaseSucceeded;
     public event Action<int> OnPurchaseFailed;
 
+    public int CurrentCost
+    {
+        get
+        {
+            if (stageManager == null) return 0;
+            int nextIndex = stageManager.CurrentStageIndex + 1;
+            if (!IsValidStageIndex(nextIndex)) return 0;
+
+            StageData data = stages[nextIndex];
+            return data != null ? Mathf.Max(0, data.traitCost) : 0;
+        }
+    }
+
+    public int CurrentClickPowerGain
+    {
+        get
+        {
+            if (stageManager == null) return 0;
+            int nextIndex = stageManager.CurrentStageIndex + 1;
+            if (!IsValidStageIndex(nextIndex)) return 0;
+
+            StageData data = stages[nextIndex];
+            return data != null ? data.traitClickGain : 0;
+        }
+    }
     private void Awake()
     {
         if (resourceManager == null) resourceManager = FindFirstObjectByType<ResourceManager>();
@@ -53,7 +78,7 @@ public sealed class PurchaseManager : MonoBehaviour
         // 2) "다음 스테이지 첫 구매면 구매 성공 후 어드밴스" 여부를 구매 전에 계산
         int current = stageManager.CurrentStageIndex;
         bool isBuyingNextStage = (stageIndexToBuy == current + 1);
-        bool isFirstPurchaseOfThatStage = (stageManager.GetPurchaseCount(stageIndexToBuy) == 0);
+        bool isFirstPurchaseOfThatStage = (stageManager.purchaseCounts[stageIndexToBuy] == 0);
         bool shouldAdvanceAfterPurchase = isBuyingNextStage && isFirstPurchaseOfThatStage;
 
         // 3) 구매 데이터 조회

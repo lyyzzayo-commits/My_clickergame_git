@@ -6,7 +6,7 @@ public class UIManager : MonoBehaviour
 {
     [SerializeField] private ResourceManager resourceManager;
     [SerializeField] private StageManager stageManager;
-    [SerializeField] private BuyButton buyButton;
+    [SerializeField] private PurchaseManager purchase;
 
     [Header("HUD")]
     [SerializeField] private TMP_Text adaptationText;
@@ -102,10 +102,10 @@ public class UIManager : MonoBehaviour
 
     private void RefreshUpgradePanel()
     {
-        if (resourceManager == null || stageManager == null || buyButton == null) return;
+        if (resourceManager == null || stageManager == null || purchase == null) return;
 
-        int cost = buyButton.CurrentCost;
-        int clickPowerGain = buyButton.CurrentClickPowerGain;
+        int cost = purchase.CurrentCost;
+        int clickPowerGain = purchase.CurrentClickPowerGain;
 
         bool canAdvance = stageManager.CanAdvance();
         bool affordable = resourceManager.Adaptation >= cost;
