@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StageData
   stageName: T2
   description: "\uD504\uB85C\uD1A0\uD0C0\uC785"
-  stageSprite: {fileID: 0}
+  stageSprite: {fileID: -465608893755010868, guid: a9f442dfaf8d3d44c8f6d091d733bb85, type: 3}
   traitCost: 15
   traitClickGain: 30
   purchasesToUnlockNextStage: 20

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,7 +8,12 @@ public class UIManager : MonoBehaviour
 
     [Header("Trait List")]
     [SerializeField] private Transform traitListRoot;       // TraitList(VerticalLayoutGroup 붙은 곳)
-    
+
+    [Header("Auto Spawn")]
+    [SerializeField] private GameObject traitButtonPrefab;
+    [SerializeField] private int spawnCount = 40;
+    private readonly List<GameObject> spawned = new();
+    private bool spawnedOnce;
     [SerializeField] private ResourceManager resourceManager;
     [SerializeField] private StageManager stageManager;
     [SerializeField] private PurchaseManager purchase;
@@ -25,6 +31,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TMP_Text clickPowerText;
     [SerializeField] private Button upgradeButton;
 
+    [Header("Upgrade Button Visual")]
+    [SerializeField] private Image upgradeButtonImage;
+
     [Header("Stage Icons")]
     [SerializeField] private Image[] stageIcons;
     [SerializeField] private Color lockedColor = Color.black;
@@ -37,6 +46,8 @@ public class UIManager : MonoBehaviour
             stageManager.OnStageChanged += HandleStageChanged;
             stageManager.OnStageVisualDirty += RefreshStageIcons;
         }
+        if (resourceManager != null)
+            resourceManager.OnAdaptationChanged += HandleAdaptationChanged;
 
         // ResourceManager�� �̺�Ʈ�� �ִٸ� ���⿡ ����
         // resourceManager.OnAdaptationChanged += HandleAdaptationChanged;
@@ -50,12 +61,53 @@ public class UIManager : MonoBehaviour
             stageManager.OnStageVisualDirty -= RefreshStageIcons;
         }
 
+        if (resourceManager != null)
+            resourceManager.OnAdaptationChanged -= HandleAdaptationChanged;
+
         // resourceManager.OnAdaptationChanged -= HandleAdaptationChanged;
     }
 
     private void Start()
     {
+        SpawnTraitButtonsOnce();
         RefreshAll();
+    }
+
+    private void SpawnTraitButtonsOnce()
+    {
+        if (spawnedOnce) return;
+        if (traitListRoot == null)
+        {
+            Debug.LogError("[UIManager] traitListRoot(Content) 미연결");
+            return;
+        }
+        if (traitButtonPrefab == null)
+        {
+            Debug.LogError("[UIManager] traitButtonPrefab 미연결");
+            return;
+        }
+
+        for (int i = 0; i < spawnCount; i++)
+        {
+            GameObject go = Instantiate(traitButtonPrefab, traitListRoot);
+            spawned.Add(go);
+
+            // PurchaseRequestor stageIndex 자동 세팅 (0~39)
+            var req = go.GetComponent<PurchaseRequestor>();
+            if (req != null)
+            {
+                req.SetStageIndex(i);
+            }
+            else
+            {
+                Debug.LogWarning($"[UIManager] PurchaseRequestor가 프리팹에 없음: {traitButtonPrefab.name}");
+            }
+        }
+
+        // 레이아웃 즉시 갱신(세로정렬/스크롤 반영)
+        LayoutRebuilder.ForceRebuildLayoutImmediate(traitListRoot as RectTransform);
+
+        spawnedOnce = true;
     }
 
     // 1) ����/�ε� �� 1ȸ ��ü ����
@@ -118,6 +170,12 @@ public class UIManager : MonoBehaviour
         if (upgradeCostText != null) upgradeCostText.text = cost.ToString();
         if (clickPowerText != null) clickPowerText.text = clickPowerGain.ToString();
         if (upgradeButton != null) upgradeButton.interactable = affordable && canAdvance;
+
+        var stage = stageManager.CurrentStage;
+        if (stage != null && upgradeButtonImage != null)
+        {
+            upgradeButtonImage.sprite = stage.stageSprite;
+        }
     }
 
     public void RefreshStageIcons()

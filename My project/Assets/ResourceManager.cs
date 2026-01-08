@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class ResourceManager : MonoBehaviour
@@ -11,6 +12,12 @@ public class ResourceManager : MonoBehaviour
     public int Adaptation => adaptation;
     public int ClickPower => clickPower;
 
+    public event Action<int> OnAdaptationChanged;
+
+    private void NotifyAdaptationChanged()
+    {
+        OnAdaptationChanged?.Invoke(adaptation);
+    }
     
     public void AddFromClick()
     {
@@ -19,6 +26,7 @@ public class ResourceManager : MonoBehaviour
 
         adaptation += clickPower;
 
+        NotifyAdaptationChanged();
         
     }
 
@@ -33,7 +41,7 @@ public class ResourceManager : MonoBehaviour
         
         if (adaptation < 0) adaptation = 0;
 
-        
+        NotifyAdaptationChanged();
         return true;
     }
 

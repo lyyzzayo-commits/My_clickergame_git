@@ -37,6 +37,10 @@ public sealed class PurchaseRequestor : MonoBehaviour
         // PurchaseManager에 "이 단계 구매 요청" 전달
         purchaseManager.RequestPurchase(stageIndex);
     }
+    public void SetStageIndex(int index)
+    {
+        stageIndex = Mathf.Max(0, index);
+    }
 
 #if UNITY_EDITOR
     // 인스펙터에서 값 바꿀 때 자동 보정/검증

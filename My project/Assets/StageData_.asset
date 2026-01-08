@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StageData
   stageName: T1 - Proto
   description: "\uD074\uB9AD\uC73C\uB85C \uC801\uC751\uC744 \uBAA8\uC73C\uB294 \uB2E8\uACC4"
-  stageSprite: {fileID: 0}
+  stageSprite: {fileID: 5942875196858128673, guid: 186badbaa58b9384bb6a009dbc122f30, type: 3}
   traitCost: 10
   traitClickGain: 1
   purchasesToUnlockNextStage: 3
