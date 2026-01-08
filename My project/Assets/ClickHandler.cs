@@ -2,15 +2,18 @@ using UnityEngine;
 
 public class ClickHandler : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    [SerializeField] private ResourceManager resourceManager;
 
-    // Update is called once per frame
-    void Update()
+    private void Awake()
     {
-        
+        if (GetComponent<Collider>() == null && GetComponent<Collider2D>() == null)
+        {
+            Debug.LogWarning($"{name} has ClickHandler but no Collider.");
+        }
+    }
+    
+    public void OnClick_character()
+    {
+        resourceManager.AddFromClick();
     }
 }

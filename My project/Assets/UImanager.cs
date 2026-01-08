@@ -19,10 +19,10 @@ public class NewMonoBehaviourScript : MonoBehaviour
     [SerializeField] private TMP_Text clickPowerText;
     [SerializeField] private Button upgradeButton;
 
-    string stageName = stageData.
-    string currentStageDesc = stageData.
-    int currentUpgradeCost = stageData.
-
+    //string stageName = stageManager.
+    //string currentStageDesc = stageManager.
+    //int currentUpgradeCost = stageManager.
+    
 
     public void RefreshAll() // 현재 게임 상태 전체를 한 번에 화면에 반영
     {
@@ -30,26 +30,26 @@ public class NewMonoBehaviourScript : MonoBehaviour
         adaptationText.text = adaptation.ToString();
 
         
-        if (stageNameText != null)
-            stageNameText.text = stageName;
+       //if (stageNameText != null)
+            //stageNameText.text = stageName;
 
         
-        if (stageDescText != null)
-            stageDescText.text = currentStageDesc;
+        //if (stageDescText != null)
+            //stageDescText.text = currentStageDesc;
 
         //이건 이미지 형태로 변수를 생성해야하는데 어떻게 하는지 모르겠음
-        if (stageImage != null)
-            stageImage.sprite = currentStageSprite;
+        //if (stageImage != null)
+            //stageImage.sprite = currentStageSprite;
 
         
-        if (upgradeCostText != null)
-            upgradeCostText.text = currentUpgradeCost.ToString();
+        //if (upgradeCostText != null)
+            //upgradeCostText.text = currentUpgradeCost.ToString();
 
-        if (clickPowerText != null)
-            clickPowerText.text = resourceManager.ClickPower.ToString();
+        //if (clickPowerText != null)
+            //clickPowerText.text = resourceManager.ClickPower.ToString();
 
-        bool affordable = adaptation >= currentUpgradeCost;
-        upgradeButton.interactable = affordable;
+        //bool affordable = adaptation >= currentUpgradeCost;
+        //upgradeButton.interactable = affordable;
     }
 
     public void SetAdaptation(int value) // 외부에서 전달 받은 Adaptation 값으로 UI 갱신
@@ -58,8 +58,8 @@ public class NewMonoBehaviourScript : MonoBehaviour
             adaptationText.text = value.ToString();
         if (upgradeButton != null)
         {
-            bool affordable = value >= currentUpgradeCost;
-            upgradeButton.interactable = affordable;
+            //bool affordable = value >= currentUpgradeCost;
+            //upgradeButton.interactable = affordable;
         }
     }
     public void RefreshAdaptation() //Adaptation 값이 바뀌었을 때 UI만 부분 갱신
@@ -70,26 +70,26 @@ public class NewMonoBehaviourScript : MonoBehaviour
             adaptationText.text = adaptation.ToString() ;
         if (upgradeButton != null)
         {
-            bool affordable = adaptation >= currentUpgradeCost;
-            upgradeButton.interactable = affordable;
+            //bool affordable = adaptation >= currentUpgradeCost;
+            //upgradeButton.interactable = affordable;
         }
     }
 
     public void SetStage(string name,string desc,Sprite sprite) // Stage가 바뀌었을 때 Stage UI만 교체
     {
-        if (stageNameText != null)
-            stageNameText.text = stageName;
+        //if (stageNameText != null)
+            //stageNameText.text = stageName;
 
-        if (stageDescText != null)
-            stageDescText.text = currentStageDesc;
+        //if (stageDescText != null)
+            //stageDescText.text = currentStageDesc;
 
-        if (stageImage != null)
-            stageImage.sprite = stageSprite;
+        //if (stageImage != null)
+            //stageImage.sprite = stageSprite;
     }
 
     private void SetUpgrade(int cost, int clickPower) // 업그레이드 정보(비용/효과)를 UI에 반영
     {
-        currentUpgradeCost = cost;
+        //currentUpgradeCost = cost;
 
         if (upgradeCostText != null)
             upgradeCostText.text = cost.ToString();

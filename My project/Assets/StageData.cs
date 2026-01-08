@@ -1,16 +1,19 @@
 using UnityEngine;
 
-public class StageData : MonoBehaviour
+[CreateAssetMenu(menuName = "Game/Stage Data", fileName = "StageData_")]
+public class StageData : ScriptableObject
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    [Header("Display")]
+    public string stageName;
+    [TextArea(2, 4)]
+    public string description;
+    public Sprite stageSprite;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    [Header("Trait")]
+    public int traitCost;
+    public int traitClickGain;
+
+    [Header("Unlock")]
+    public int purchasesToUnlockNextStage;
+
 }
