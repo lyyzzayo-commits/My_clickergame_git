@@ -15,5 +15,6 @@ public class ClickHandler : MonoBehaviour
     public void OnClick_character()
     {
         resourceManager.AddFromClick();
+        
     }
 }
