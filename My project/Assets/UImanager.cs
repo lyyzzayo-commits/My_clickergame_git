@@ -1,138 +1,130 @@
-using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 
-public class UImanager : MonoBehaviour
+public class UIManager : MonoBehaviour
 {
     [SerializeField] private ResourceManager resourceManager;
     [SerializeField] private StageManager stageManager;
-    [SerializeField] private BuyButton buyButton; 
+    [SerializeField] private BuyButton buyButton;
 
-
-    // UI 참조
+    [Header("HUD")]
     [SerializeField] private TMP_Text adaptationText;
+
+    [Header("Stage Panel")]
     [SerializeField] private TMP_Text stageNameText;
     [SerializeField] private TMP_Text stageDescText;
     [SerializeField] private Image stageImage;
 
+    [Header("Upgrade Panel")]
     [SerializeField] private TMP_Text upgradeCostText;
     [SerializeField] private TMP_Text clickPowerText;
     [SerializeField] private Button upgradeButton;
 
-    [SerializeField] private StageManager stageManager;
+    [Header("Stage Icons")]
     [SerializeField] private Image[] stageIcons;
-
     [SerializeField] private Color lockedColor = Color.black;
     [SerializeField] private Color unlockedColor = Color.white;
 
+    private void OnEnable()
+    {
+        if (stageManager != null)
+        {
+            stageManager.OnStageChanged += HandleStageChanged;
+            stageManager.OnStageVisualDirty += RefreshStageIcons;
+        }
 
-    //string stageName = stageManager.
-    //string currentStageDesc = stageManager.
-    //int currentUpgradeCost = stageManager.
+        // ResourceManager에 이벤트가 있다면 여기에 구독
+        // resourceManager.OnAdaptationChanged += HandleAdaptationChanged;
+    }
+
+    private void OnDisable()
+    {
+        if (stageManager != null)
+        {
+            stageManager.OnStageChanged -= HandleStageChanged;
+            stageManager.OnStageVisualDirty -= RefreshStageIcons;
+        }
+
+        // resourceManager.OnAdaptationChanged -= HandleAdaptationChanged;
+    }
 
     private void Start()
     {
+        RefreshAll();
+    }
+
+    // 1) 시작/로드 시 1회 전체 갱신
+    public void RefreshAll()
+    {
+        RefreshAdaptationText();
+        RefreshStagePanel();
+        RefreshUpgradePanel();
         RefreshStageIcons();
     }
 
-    
-
-    public void RefreshAll() // 현재 게임 상태 전체를 한 번에 화면에 반영
+    // 2) StageManager.OnStageChanged에서 호출됨
+    private void HandleStageChanged(StageData newStage)
     {
-        int adaptation = resourceManager.Adaptation;
-        adaptationText.text = adaptation.ToString();
-
-        
-       //if (stageNameText != null)
-            //stageNameText.text = stageName;
-
-        
-        //if (stageDescText != null)
-            //stageDescText.text = currentStageDesc;
-
-        //이건 이미지 형태로 변수를 생성해야하는데 어떻게 하는지 모르겠음
-        //if (stageImage != null)
-            //stageImage.sprite = currentStageSprite;
-
-        
-        //if (upgradeCostText != null)
-            //upgradeCostText.text = currentUpgradeCost.ToString();
-
-        //if (clickPowerText != null)
-            //clickPowerText.text = resourceManager.ClickPower.ToString();
-
-        //bool affordable = adaptation >= currentUpgradeCost;
-        //upgradeButton.interactable = affordable;
+        RefreshStagePanel();     // 이름/설명/이미지
+        RefreshUpgradePanel();   // 다음 스테이지 비용/버튼 상태
+        RefreshStageIcons();     // 아이콘 색
     }
 
-    public void SetAdaptation(int value) // 외부에서 전달 받은 Adaptation 값으로 UI 갱신
+    // 3) Adaptation 변경 시 호출되도록(이벤트가 없으면 BuyButton 클릭 후 수동 호출해도 됨)
+    public void HandleAdaptationChanged(int newValue)
     {
-        if (adaptationText != null)
-            adaptationText.text = value.ToString();
-        if (upgradeButton != null)
-        {
-            //bool affordable = value >= currentUpgradeCost;
-            //upgradeButton.interactable = affordable;
-        }
-    }
-    public void RefreshAdaptation() //Adaptation 값이 바뀌었을 때 UI만 부분 갱신
-    {
-        int adaptation = resourceManager.Adaptation;
-
-        if (adaptationText != null)
-            adaptationText.text = adaptation.ToString() ;
-        if (upgradeButton != null)
-        {
-            //bool affordable = adaptation >= currentUpgradeCost;
-            //upgradeButton.interactable = affordable;
-        }
+        RefreshAdaptationText(newValue);
+        RefreshUpgradePanel(); // 돈이 바뀌면 구매 가능 여부도 바뀜
     }
 
-    public void SetStage(string name,string desc,Sprite sprite) // Stage가 바뀌었을 때 Stage UI만 교체
+    private void RefreshAdaptationText()
     {
-        //if (stageNameText != null)
-            //stageNameText.text = stageName;
-
-        //if (stageDescText != null)
-            //stageDescText.text = currentStageDesc;
-
-        //if (stageImage != null)
-            //stageImage.sprite = stageSprite;
+        if (resourceManager == null) return;
+        RefreshAdaptationText(resourceManager.Adaptation);
     }
 
-    public void SetUpgrade(int cost, int clickPower, bool affordable, bool canAdvance) // 업그레이드 정보(비용/효과)를 UI에 반영
+    private void RefreshAdaptationText(int value)
     {
-        //currentUpgradeCost = cost;
-
-        if (upgradeCostText != null)
-            upgradeCostText.text = cost.ToString();
-        
-        if (clickPowerText != null)
-            clickPowerText.text = clickPower.ToString();
-
-        if (upgradeButton != null)
-            upgradeButton.interactable = affordable && canAdvance;
+        if (adaptationText != null) adaptationText.text = value.ToString();
     }
 
-    private void SetUpgradeAffordable(bool affordable) // 업그레이드 버튼의 구매 가능/불가 상태만 제어
+    private void RefreshStagePanel()
     {
-        if (upgradeButton != null)
+        if (stageManager == null) return;
+        var stage = stageManager.CurrentStage;
+        if (stage == null) return;
 
-            upgradeButton.interactable = affordable;
+        if (stageNameText != null) stageNameText.text = stage.stageName;
+        if (stageDescText != null) stageDescText.text = stage.description;
+        if (stageImage != null) stageImage.sprite = stage.stageSprite;
+    }
+
+    private void RefreshUpgradePanel()
+    {
+        if (resourceManager == null || stageManager == null || buyButton == null) return;
+
+        int cost = buyButton.CurrentCost;
+        int clickPowerGain = buyButton.CurrentClickPowerGain;
+
+        bool canAdvance = stageManager.CanAdvance();
+        bool affordable = resourceManager.Adaptation >= cost;
+
+        if (upgradeCostText != null) upgradeCostText.text = cost.ToString();
+        if (clickPowerText != null) clickPowerText.text = clickPowerGain.ToString();
+        if (upgradeButton != null) upgradeButton.interactable = affordable && canAdvance;
     }
 
     public void RefreshStageIcons()
     {
-        if (stageManager == null) return;
+        if (stageManager == null || stageIcons == null) return;
 
         for (int i = 0; i < stageIcons.Length; i++)
         {
             var img = stageIcons[i];
             if (img == null) continue;
 
-            StageData data = stageManager.GetStage(i);
+            var data = stageManager.GetStage(i);
             if (data == null)
             {
                 img.enabled = false;
@@ -140,25 +132,10 @@ public class UImanager : MonoBehaviour
             }
 
             img.enabled = true;
-            img.sprite = data.stageSprite; // StageData의 스프라이트 필드명 맞춰서
-            bool unlocked = stageManager.IsStageUnlocked(i);
+            img.sprite = data.stageSprite;
 
+            bool unlocked = stageManager.IsStageUnlocked(i);
             img.color = unlocked ? unlockedColor : lockedColor;
         }
     }
-
-    private void OnEnable()
-    
-    {
-        if (stageManager != null)
-            stageManager.OnStageVisualDirty += RefreshStageIcons;
-    }
-
-    private void OnDisable()
-    {
-        if (stageManager != null)
-            stageManager.OnStageVisualDirty -= RefreshStageIcons;
-    }
-
-
 }
