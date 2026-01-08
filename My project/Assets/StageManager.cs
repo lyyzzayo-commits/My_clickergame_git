@@ -37,15 +37,15 @@ public class StageManager : MonoBehaviour
 
         if (stageIndex < 0 || stageIndex >= purchaseCounts.Length) return;
 
-        // 3) 구매 횟수 기록
+        
         purchaseCounts[stageIndex]++;
 
-        // 4) (핵심) "현재 단계 구매"일 때만 언락 조건 검사
+        
         if (stageIndex != currentStageIndex) return;
 
-        // 5) 현재 단계의 언락 조건 도달 시 다음 단계 언락
+        
         int need = stages[currentStageIndex].purchasesToUnlockNextStage;
-        if (need <= 0) need = 1; // 방어: 0/음수면 1로 취급(정책)
+        if (need <= 0) need = 1; 
 
         if (purchaseCounts[currentStageIndex] >= need)
         {
