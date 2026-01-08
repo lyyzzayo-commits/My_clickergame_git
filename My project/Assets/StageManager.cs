@@ -15,7 +15,7 @@ public class StageManager : MonoBehaviour
     {
         Initialize();
     }
-    private void Initialize() //½ÇÇàµÇ°í »óÅÂ ÃÊ±âÈ­
+    private void Initialize() //ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
     {
         if (stages == null || stages.Length == 0)
         {
@@ -31,7 +31,7 @@ public class StageManager : MonoBehaviour
 
         isNextStageUnlocked = false;
     }
-    public void RecordTraitPurchase(int stageIndex) //½ºÅ×ÀÌÁö º° ±¸¸ÅÈ½¼ö ±â·Ï
+    public void RecordTraitPurchase(int stageIndex) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È½ï¿½ï¿½ ï¿½ï¿½ï¿½
     {
         if (stages == null || purchaseCounts == null) return;
 
@@ -47,12 +47,12 @@ public class StageManager : MonoBehaviour
         int need = stages[currentStageIndex].purchasesToUnlockNextStage;
         if (need <= 0) need = 1; 
 
-        if (purchaseCounts[currentStageIndex] >= need) // ´ÙÀ½ ½ºÅ×ÀÌÁö °³¹æ Á¶°Ç 
+        if (purchaseCounts[currentStageIndex] >= need) // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
         {
             UnlockNextStage();
         }
     }
-    public void UnlockNextStage() // ´ÙÀ½ ½ºÅ×ÀÌÁö °³¹æ 
+    public void UnlockNextStage() // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
     {
         if (isNextStageUnlocked) return;
 
@@ -61,7 +61,7 @@ public class StageManager : MonoBehaviour
 
     }
 
-    public bool CanAdvance() // ½ºÅ×ÀÌÁö °³¹æ Á¶°Ç  
+    public bool CanAdvance() // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½  
     {
         if (stages == null) return false;
         if (currentStageIndex + 1 >= stages.Length) return false;
@@ -71,7 +71,7 @@ public class StageManager : MonoBehaviour
         return true;
     }
 
-    public void AdvanceStage() // ´ÙÀ½ ´Ü°è
+    public void AdvanceStage() // ï¿½ï¿½ï¿½ï¿½ ï¿½Ü°ï¿½
     {
         if (stages == null) return;
         int nextIndex = currentStageIndex + 1;
@@ -107,6 +107,14 @@ public class StageManager : MonoBehaviour
         if (index == currentStageIndex + 1) return isNextStageUnlocked;
         return false;
     }
+
+    public int GetPurchaseCount(int index)
+{
+    if (purchaseCounts == null) return 0;
+    if (index < 0 || index >= purchaseCounts.Length) return 0;
+    return purchaseCounts[index];
+}
+
 }
 
 
