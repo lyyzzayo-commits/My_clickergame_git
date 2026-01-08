@@ -7,9 +7,7 @@ public class UIManager : MonoBehaviour
 
     [Header("Trait List")]
     [SerializeField] private Transform traitListRoot;       // TraitList(VerticalLayoutGroup 붙은 곳)
-    [SerializeField] private TraitButton traitButtonPrefab;
-    private readonly System.Collections.Generic.List<TraitButton> spawned = new();
-
+    
     [SerializeField] private ResourceManager resourceManager;
     [SerializeField] private StageManager stageManager;
     [SerializeField] private PurchaseManager purchase;
@@ -57,7 +55,6 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        BuildTraitButtons();
         RefreshAll();
     }
 
@@ -68,17 +65,8 @@ public class UIManager : MonoBehaviour
         RefreshStagePanel();
         RefreshUpgradePanel();
         RefreshStageIcons();
-        RefreshTraitButtonsState();
     }
-    private void RefreshTraitButtonsState()
-    {
-        for (int i = 0; i < spawned.Count; i++)
-        {
-             spawned[i].RefreshState();
-            // cost를 버튼이 들고 있거나, StageData에서 다시 읽게 구성
-            // 가장 단순: 버튼 내부에서 StageData cost를 다시 받도록 구조화
-        }
-    }
+    
 
     // 2) StageManager.OnStageChanged���� ȣ���
     private void HandleStageChanged(StageData newStage)
